@@ -1,26 +1,28 @@
-/*
- * This require() statement reads environment variable values from the file
- * called .env in the project directory.  You can set up the environment
- * variables in that file to specify connection information for your own DB
- * server.
- */
-require('dotenv').config()
-
 const express = require('express')
 const morgan = require('morgan')
+const { connectToRabbitMQ, getChannel, queueName } = require('./rabbitmq')
+
 
 const api = require('./api')
-const { connectToDb } = require('./lib/mongo')
+const https = require('https');
+const fs = require('fs');
+const options = {
+  key: fs.readFileSync('key.pem'),
+  cert: fs.readFileSync('cert.pem')
+};
+
+const { connectToDb } = require('./mongodb')
 
 const app = express()
 const port = process.env.PORT || 8000
 
 /*
- * Morgan is a popular logger.
+ * Morgan is a popular request logger.
  */
 app.use(morgan('dev'))
 
 app.use(express.json())
+app.use(express.static('public'))
 
 /*
  * All routes for the API are written in modules in the api/ directory.  The
@@ -30,9 +32,9 @@ app.use(express.json())
 app.use('/', api)
 
 app.use('*', function (req, res, next) {
-    res.status(404).send({
-        error: "Requested resource " + req.originalUrl + " does not exist"
-    })
+  res.status(404).send({
+    error: `Requested resource "${req.originalUrl}" does not exist`
+  })
 })
 
 /*
@@ -40,14 +42,16 @@ app.use('*', function (req, res, next) {
  * a response with a 500 status to the client.
  */
 app.use('*', function (err, req, res, next) {
-    console.error("== Error:", err)
-    res.status(500).send({
-        error: "Server error.  Please try again later."
-    })
+  console.error("== Error:", err)
+  res.status(500).send({
+      error: "Server error.  Please try again later."
+  })
 })
 
-connectToDb().then(function () {
-    app.listen(port, function () {
-        console.log("== Server is running on port", port)
-    })
+connectToDb().then(async () => {
+  //await connectToRabbitMQ()
+  https.createServer(options, app).listen(port, function () { // Create an HTTPS server
+    console.log("== Server is running on port", port);
+    });
 })
+
