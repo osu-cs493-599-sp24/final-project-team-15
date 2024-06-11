@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: pwd
+      MONGO_INITDB_DATABASE: Tarpaulin
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+      - ./initDb.js:/docker-entrypoint-initdb.d/initDb.js:ro
+
+  initdb:
+    image: node:latest
+    container_name: initdb
+    depends_on:
+      - mongo
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_USER: root
+      MONGO_PASSWORD: pwd
+      MONGO_DB: Tarpaulin
+      MONGO_AUTH_DB: admin
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: ["node", "docker-entrypoint-initdb.d/initDb.js"]
+
+  nodejs:
+    build: .
+    container_name: nodejs
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: 27017
+      MONGO_USER: root
+      MONGO_PASSWORD: pwd
+      MONGO_DB: Tarpaulin
+      MONGO_AUTH_DB: admin
+    depends_on:
+      - mongo
+      - initdb
+
+volumes:
+  mongo-data:
