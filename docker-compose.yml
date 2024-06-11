@@ -1,53 +1,23 @@
-version: '3.8'
-
 services:
-  mongo:
+  db:
     image: mongo:latest
-    container_name: mongo
-    restart: always
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: pwd
-      MONGO_INITDB_DATABASE: Tarpaulin
-    ports:
-      - "27017:27017"
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_DB}
     volumes:
-      - mongo-data:/data/db
-      - ./initDb.js:/docker-entrypoint-initdb.d/initDb.js:ro
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
-  initdb:
-    image: node:latest
-    container_name: initdb
-    depends_on:
-      - mongo
-    environment:
-      MONGO_HOST: mongo
-      MONGO_PORT: 27017
-      MONGO_USER: root
-      MONGO_PASSWORD: pwd
-      MONGO_DB: Tarpaulin
-      MONGO_AUTH_DB: admin
-    volumes:
-      - .:/app
-    working_dir: /app
-    command: ["node", "docker-entrypoint-initdb.d/initDb.js"]
-
-  nodejs:
+  api:
     build: .
-    container_name: nodejs
-    restart: always
     ports:
-      - "3000:3000"
+      - 8000:8000
     environment:
-      MONGO_HOST: mongo
-      MONGO_PORT: 27017
-      MONGO_USER: root
-      MONGO_PASSWORD: pwd
-      MONGO_DB: Tarpaulin
-      MONGO_AUTH_DB: admin
+      MONGO_HOST: db
+      MONGO_USER: ${MONGO_USER}
+      MONGO_PASSWORD: ${MONGO_PASSWORD}
+      MONGO_DB_NAME: ${MONGO_DB_NAME}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
     depends_on:
-      - mongo
-      - initdb
-
-volumes:
-  mongo-data:
+      - db
+    restart: on-failure
