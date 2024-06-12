@@ -8,7 +8,7 @@ const mongoDbName = process.env.MONGO_DB
 const mongoAuthDb = process.env.MONGO_AUTH_DB || mongoDbName
 
 
-const mongoUrl = `mongodb://${mongoUser}:${mongoPassword}@${mongoHost}:${mongoPort}/${mongoAuthDb}`
+const mongoUrl = `mongodb://${mongoHost}:${mongoPort}`
 
 let db = null
 exports.connectToDb = async function connectToDb() {

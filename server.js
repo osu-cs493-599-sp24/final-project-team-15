@@ -14,7 +14,7 @@ app.use(morgan('dev'))
 
 app.use(express.json())
 
-app.use('/', api)
+app.use('/api', api);  
 
 app.use('*', function (req, res, next) {
     res.status(404).send({
@@ -34,3 +34,5 @@ connectToDb().then(function () {
         console.log("== Server is running on port", port)
     })
 })
+
+module.exports = app;
