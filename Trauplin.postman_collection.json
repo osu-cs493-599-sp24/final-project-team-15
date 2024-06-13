@@ -1,0 +1,758 @@
+{
+	"info": {
+		"_postman_id": "735909ea-0e2f-42fc-9468-7d9be9aeb071",
+		"name": "Trauplin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34438425"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create a new User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Admin\",\r\n    \"email\":\"Admin@test.com\",\r\n    \"password\": \"hunter2\",\r\n    \"role\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Log in a User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"Admin@test.com\",\r\n    \"password\": \"hunter2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/users/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch data about a specific User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI1Nzg4NywiZXhwIjoxNzE4MjYxNDg3fQ.nk_bIcRf2znZzG4Haby8Z86Fk9tzre2tDBgJb6Zmcv0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/users/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"users",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a87c32e48638b4ded66d7"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Courses",
+			"item": [
+				{
+					"name": "Create a new course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODgwMTJlNDg2MzhiNGRlZDY2ZDkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MTgyNTc5MDUsImV4cCI6MTcxODI2MTUwNX0.PzQ0GKGkTXnKRdpQMmedlEdySenLo3J5kJNeDGtn_LQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"subject\": \"CS\",\r\n  \"number\": \"493\",\r\n  \"title\": \"Cloud Application Development\",\r\n  \"term\": \"sp22\",\r\n  \"instructorID\": \"666a87c32e48638b4ded66d7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/courses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch the list of all Courses",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODcyYjJlNDg2MzhiNGRlZDY2ZDMiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTcxODI1Nzg2MSwiZXhwIjoxNzE4MjYxNDYxfQ.NIYYg5xSsIZjHB4wtRo4EiAU04RObQ_OidW8KX1hgT4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/courses",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch data about a specific Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODcyYjJlNDg2MzhiNGRlZDY2ZDMiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTcxODI1Nzg2MSwiZXhwIjoxNzE4MjYxNDYxfQ.NIYYg5xSsIZjHB4wtRo4EiAU04RObQ_OidW8KX1hgT4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/courses/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a8f64a007832a9c3ce411"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update data for a specific Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODgwMTJlNDg2MzhiNGRlZDY2ZDkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MTgyNTc5MDUsImV4cCI6MTcxODI2MTUwNX0.PzQ0GKGkTXnKRdpQMmedlEdySenLo3J5kJNeDGtn_LQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"subject\": \"CS\",\r\n  \"number\": \"493\",\r\n  \"title\": \"Cloud Application Development\",\r\n  \"term\": \"sp24\",\r\n  \"instructorID\": \"666a87c32e48638b4ded66d7\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/courses/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a8f64a007832a9c3ce411"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove a specific Course from the database",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODgwMTJlNDg2MzhiNGRlZDY2ZDkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MTgyNTc5MDUsImV4cCI6MTcxODI2MTUwNX0.PzQ0GKGkTXnKRdpQMmedlEdySenLo3J5kJNeDGtn_LQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/courses/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a8f64a007832a9c3ce411"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update enrollment for a Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI1Nzg4NywiZXhwIjoxNzE4MjYxNDg3fQ.nk_bIcRf2znZzG4Haby8Z86Fk9tzre2tDBgJb6Zmcv0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"add\": [\r\n        \"666a872b2e48638b4ded66d3\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/courses/:id/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses",
+								":id",
+								"students"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a94f43a4f82d295391508"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch a list of the students enrolled in the Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI3MDQ1NCwiZXhwIjoxNzE4MzU2ODU0fQ.cnBenxgZ-CPiBdoG0asBe-r-EIn4uPEd82thZPEuS4Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/courses/:id/students",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses",
+								":id",
+								"students"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a94f43a4f82d295391508"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch a CSV file containing list of the students enrolled in the Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODgwMTJlNDg2MzhiNGRlZDY2ZDkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MTgyNjE3MTcsImV4cCI6MTcxODI2NTMxN30.nHNeeXA5WFnfNvJgnfMyAdBjUYtT6gz6zvfb1Sm13so",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/courses/:id/roster",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses",
+								":id",
+								"roster"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a94f43a4f82d295391508"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch a list of the Assignments for the Course",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI2MTY3MywiZXhwIjoxNzE4MjY1MjczfQ._d2NLXIOEoq4FTLBtVDQcMGaM3gnaU2ufEGZ8-Wc0s0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/courses/:id/assignments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"courses",
+								":id",
+								"assignments"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a94f43a4f82d295391508"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assignments",
+			"item": [
+				{
+					"name": "Create a new Assignment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI2NTU3MCwiZXhwIjoxNzE4MjY5MTcwfQ.tAdWf5ROGbpFy8w22d8-to2i0yXuikewmPkaZ4PeaBw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"courseId\": \"666a94f43a4f82d295391508\",\r\n  \"title\": \"Assignment 2\",\r\n  \"points\": 100,\r\n  \"due\": \"2024-06-20T17:00:00-07:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/assignments",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"assignments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch data about a specific Assignment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODgwMTJlNDg2MzhiNGRlZDY2ZDkiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MTgyNzA3NTEsImV4cCI6MTcxODM1NzE1MX0.igmiaJerALdHwm6nAJi7NBO0qGE0GCRgYBynzyEnpc4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/assignments/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"assignments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a9d5b809ca7a84f64c068"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update data for a specific Assignment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI2MTY3MywiZXhwIjoxNzE4MjY1MjczfQ._d2NLXIOEoq4FTLBtVDQcMGaM3gnaU2ufEGZ8-Wc0s0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"courseId\": \"666a94f43a4f82d295391508\",\r\n  \"title\": \"Assignment 3\",\r\n  \"points\": 100,\r\n  \"due\": \"2024-06-20T17:00:00-07:00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/assignments/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"assignments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666aa0ff2f03a63feb0fcdaf"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove a specific Assignment from the database",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI2NTAyMywiZXhwIjoxNzE4MjY4NjIzfQ.4F-F1aBka1LHFJPSBCcoLqMwvbjQYjoZ8qSW4Fb838g",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/assignments/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"assignments",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666aa6fbc33eae82bc89d1f8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a new Submission for an Assignment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODcyYjJlNDg2MzhiNGRlZDY2ZDMiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTcxODI3MDczMCwiZXhwIjoxNzE4MzU3MTMwfQ.5qx33JzCP7Gsn1t3tynDXNen2D1HwnpSm-vXT2QA_Lo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "assignmentId",
+									"value": "666a9d5b809ca7a84f64c068",
+									"type": "text"
+								},
+								{
+									"key": "studentId",
+									"value": "666a872b2e48638b4ded66d3",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/preet/Downloads/testfile.pdf"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8000/assignments/:id/submissions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"assignments",
+								":id",
+								"submissions"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a9d5b809ca7a84f64c068"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Fetch the list of all Submissions for an Assignment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI3MDQ1NCwiZXhwIjoxNzE4MzU2ODU0fQ.cnBenxgZ-CPiBdoG0asBe-r-EIn4uPEd82thZPEuS4Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/assignments/:id/submissions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"assignments",
+								":id",
+								"submissions"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666a9d5b809ca7a84f64c068"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Submissions",
+			"item": [
+				{
+					"name": "Update data for a specific Submission",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjZhODdjMzJlNDg2MzhiNGRlZDY2ZDciLCJyb2xlIjoiaW5zdHJ1Y3RvciIsImlhdCI6MTcxODI3MDQ1NCwiZXhwIjoxNzE4MzU2ODU0fQ.cnBenxgZ-CPiBdoG0asBe-r-EIn4uPEd82thZPEuS4Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"grade\": 90\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/submissions/:id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"submissions",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "666ad017f51051bd871841ce"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
