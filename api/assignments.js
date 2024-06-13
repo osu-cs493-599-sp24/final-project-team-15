@@ -160,30 +160,71 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
 router.get("/:id/submissions", authMiddleware, async (req, res, next) => {
     const user = req.user;
     const assignmentId = req.params.id;
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = parseInt(req.query.limit, 10) || 5;
 
     try {
         const assignment = await Assignment.findById(assignmentId);
-        const course = await Course.findById(assignment.courseId);
         if (!assignment) {
             return res.status(404).send({ error: "Assignment not found" });
         }
 
-        if (user.role !== 'admin' && user._id.toString() !== course.instructorID.toString()) {
+        const course = await Course.findById(assignment.courseId);
+        if (!course) {
+            return res.status(404).send({ error: "Course not found" });
+        }
+
+        if (user.role !== 'admin' && !user._id.equals(course.instructorID)) {
             return res.status(403).send({ error: "Unauthorized to fetch submissions" });
         }
 
-        const submissions = await Submission.find({ assignmentId: assignment._id }).select('-createdAt -updatedAt -__v')
+        const totalSubmissionsCount = await Submission.countDocuments({ assignmentId: assignment._id });
+
+        const submissions = await Submission.find({ assignmentId: assignment._id })
+            .select('-createdAt -updatedAt -__v')
             .skip((page - 1) * limit)
             .limit(limit)
             .exec();
 
-        res.status(200).send(submissions);
+        const totalPages = Math.ceil(totalSubmissionsCount / limit);
+
+        const baseUrl = `${req.protocol}://${req.get('host')}${req.baseUrl}/${assignmentId}/submissions`;
+        const links = {};
+
+        if (page < totalPages) {
+            links.nextPage = `${baseUrl}?page=${page + 1}&limit=${limit}`;
+            links.lastPage = `${baseUrl}?page=${totalPages}&limit=${limit}`;
+        }
+
+        if (page > 1) {
+            links.prevPage = `${baseUrl}?page=${page - 1}&limit=${limit}`;
+            links.firstPage = `${baseUrl}?page=1&limit=${limit}`;
+        }
+
+        const response = {
+            submissions: submissions.map(submission => ({
+                assignmentId: submission.assignmentId,
+                studentId: submission.studentId,
+                timestamp: submission.timestamp,
+                grade: submission.grade,
+                file: submission.file
+            })),
+            pageNumber: page,
+            totalPages: totalPages,
+            pageSize: limit,
+            totalCount: totalSubmissionsCount,
+            links: links
+        };
+
+        res.status(200).send(response);
     } catch (e) {
         next(e);
     }
-})
+});
+
+
+
+
 
 // SUBMIT AN ASSIGNMENT
 
