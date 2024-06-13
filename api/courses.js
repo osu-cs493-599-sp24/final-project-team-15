@@ -69,7 +69,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
 });
 
 // GET A SPECIFIC COURSE
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", authMiddleware, async (req, res, next) => {
   const courseId = req.params.id;
   try {
     const course = await Course.findById(courseId).select('-students -assignments -createdAt -updatedAt -__v')

@@ -5,8 +5,20 @@ const User = require('../models/user')
 const { Course } = require('../models/course')
 const authMiddleware = require('../middleware/authentication')
 const fs = require('fs')
-const { Submission } = require('../models/submission')
+const Submission = require('../models/submission')
+const multer = require('multer')
+const crypto = require("node:crypto")
+const path = require("path");
 
+const storage = multer.diskStorage({
+    destination: `${__dirname}/uploads`,
+    filename: (req, file, callback) => {
+        const filename = crypto.pseudoRandomBytes(16).toString('hex')
+        const extension = path.extname(file.originalname);
+        callback(null, `${filename}${extension}`)
+    }
+})
+const upload = multer({ storage: storage })
 
 
 // POST AN ASSIGNMENT
@@ -49,7 +61,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
 
 // GET A SPECIFIC ASSIGNMENT
 
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", authMiddleware, async (req, res, next) => {
 
     const assignmentId = req.params.id;
     try{
@@ -120,14 +132,10 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
       if (!assignment) {
         return res.status(404).send({ error: "Assignment not found" });
       }
-  
-      // Fetch the course to which the assignment belongs
       const course = await Course.findById(assignment.courseId);
       if (!course) {
         return res.status(404).send({ error: "Course not found" });
       }
-  
-      // Check if the user is an instructor for the course
       const isInstructor = user.role === 'instructor' && user._id.equals(course.instructorID);
   
       if (!isAdmin && !isInstructor) {
@@ -146,6 +154,105 @@ router.delete("/:id", authMiddleware, async (req, res, next) => {
       next(e);
     }
   });
+
+// GET ALL SUBMISSIONS FOR AN ASSIGNMENT
+
+router.get("/:id/submissions", authMiddleware, async (req, res, next) => {
+    const user = req.user;
+    const assignmentId = req.params.id;
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+
+    try {
+        const assignment = await Assignment.findById(assignmentId);
+        const course = await Course.findById(assignment.courseId);
+        if (!assignment) {
+            return res.status(404).send({ error: "Assignment not found" });
+        }
+
+        if (user.role !== 'admin' && user._id.toString() !== course.instructorID.toString()) {
+            return res.status(403).send({ error: "Unauthorized to fetch submissions" });
+        }
+
+        const submissions = await Submission.find({ assignmentId: assignment._id }).select('-createdAt -updatedAt -__v')
+            .skip((page - 1) * limit)
+            .limit(limit)
+            .exec();
+
+        res.status(200).send(submissions);
+    } catch (e) {
+        next(e);
+    }
+})
+
+// SUBMIT AN ASSIGNMENT
+
+router.post("/:id/submissions", authMiddleware, upload.single('file'), async (req, res, next) => {
+    const user = req.user;
+    const studentId = user._id;
+    const assignmentId = req.params.id;
+    if(!req.file){
+        return res.status(400).send({ error: "File is required" });
+    }
+    if(user.role !== 'student'){
+        return res.status(403).send({ error: "Unauthorized to submit an assignment" });
+    }
+    try{
+        const assignment = await Assignment.findById(assignmentId);
+        if(!assignment){
+            return res.status(404).send({ error: "Assignment not found" });
+        }
+        const course = await Course.findById(assignment.courseId);
+        //console.log(assignment.courseId, course.students, studentId)
+        if(!course){
+            return res.status(404).send({ error: "Course not found" });
+        }
+        const isEnrolled = course.students.includes(studentId);
+        if(!isEnrolled){
+            return res.status(403).send({ error: "Unauthorized to submit an assignment during isEnrolled check" });
+        }
+        const submission = new Submission({
+            assignmentId,
+            studentId,
+            timestamp: new Date(),
+            file: `${req.protocol}://${req.get('host')}/assignments/media/submissions/${req.file.filename}`,
+            filename: req.file.filename
+        });
+        await submission.save();
+        res.status(201).send({ id: submission._id });
+    }catch(e){
+        next(e);
+    }
+
+})
+
+// GET A SPECIFIC SUBMISSION
+router.get("/media/submissions/:filename", authMiddleware, async (req, res, next) => {
+    const user = req.user;
+    const isAdmin = user.role === 'admin';
+    const isInstructor = user.role === 'instructor';
+    const { filename } = req.params;
+    const filePath = path.join(__dirname, 'uploads', filename);
+    
+    try{
+        const submission = await Submission.findOne({ filename: req.params.filename });
+        if (!submission) {
+            return res.status(404).send({ error: "Submission not found" });
+        }
+        const assignment = await Assignment.findById(submission.assignmentId);
+        const course = await Course.findById(assignment.courseId);
+        console.log(course.instructorID, user._id, submission.assignmentId)
+        if ( (isInstructor && user._id.equals(course.instructorID)) || isAdmin ) {
+            res.status(200).sendFile(filePath);
+        } else{
+            return res.status(403).send({ error: "Unauthorized to download submission file" });
+        }
+
+
+    } catch (e){
+        next(e);
+    }
+});
 
 
 exports.router = router

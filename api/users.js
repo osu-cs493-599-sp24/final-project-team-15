@@ -27,7 +27,7 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
 
         res.status(200).json({ token });
     } catch (error) {
@@ -57,7 +57,7 @@ router.post('/', async (req, res) => {
 });
 
 // Fetch user data endpoint
-router.get('/:id', authMiddleware, async (req, res) => { // Protect this route with authMiddleware
+router.get('/:id', authMiddleware, async (req, res) => {
     const userId = req.params.id;
 
     if (!userId) {

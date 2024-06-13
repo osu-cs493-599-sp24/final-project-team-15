@@ -1,13 +1,14 @@
 const { Router } = require('express');
 const usersRouter = require('./users').router;
 const assignmentsRouter = require('./assignments').router;
-const coursesRouter = require('./courses'); // Ensure this is correctly imported
-const authMiddleware = require('../middleware/authentication'); // Ensure correct import
-
+const coursesRouter = require('./courses'); 
+const submissionsRouter = require('./submissions'); 
+const authMiddleware = require('../middleware/authentication');
 const router = Router();
 
+router.use('/submissions', submissionsRouter);
 router.use('/users', usersRouter);
-router.use('/assignments', authMiddleware, assignmentsRouter); // Protect assignments route
-router.use('/courses', authMiddleware, coursesRouter); // Protect courses route
+router.use('/assignments', assignmentsRouter); 
+router.use('/courses', coursesRouter);
 
 module.exports = router;

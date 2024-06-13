@@ -9,7 +9,7 @@ function connectToDb() {
     .then(() => console.log("Successfully connected to MongoDB"))
     .catch(err => {
       console.error("Connection error", err);
-      process.exit(1); // Exit the process with an error code if the connection fails
+      process.exit(1);
     });
 }
 
