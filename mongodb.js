@@ -1,21 +1,16 @@
-const { MongoClient } = require('mongodb');
+const mongoose = require('mongoose');
 
-const mongoHost = process.env.MONGO_HOST 
-const mongoPort = process.env.MONGO_PORT 
-const mongoUser = process.env.MONGO_USER 
-const mongoPassword = process.env.MONGO_PASSWORD
-const mongoDbName = process.env.MONGO_DB
-const mongoAuthDb = process.env.MONGO_AUTH_DB || mongoDbName
+function connectToDb() {
+  const dbUri = `mongodb://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DB}?authSource=trauplin`;
 
+  console.log("Connecting to MongoDB at", dbUri);
 
-const mongoUrl = `mongodb://${mongoHost}:${mongoPort}`
-
-let db = null
-exports.connectToDb = async function connectToDb() {
-    const client = await MongoClient.connect(mongoUrl)
-    db = client.db(mongoDbName)
+  return mongoose.connect(dbUri)
+    .then(() => console.log("Successfully connected to MongoDB"))
+    .catch(err => {
+      console.error("Connection error", err);
+      process.exit(1); // Exit the process with an error code if the connection fails
+    });
 }
 
-exports.getDb = function getDb() {
-    return db
-}
+module.exports = { connectToDb };

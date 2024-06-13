@@ -1,29 +1,16 @@
-const { getDb } = require('../mongodb');
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-class Course {
-  constructor(data) {
-    this.subject = data.subject;
-    this.number = data.number;
-    this.title = data.title;
-    this.term = data.term;
-    this.instructorId = data.instructorId;
-  }
+const courseSchema = new Schema({
+    subject: { type: String, required: true },
+    number: { type: String, required: true },
+    title: { type: String, required: true },
+    term: { type: String, required: true },
+    instructorID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    students: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    assignments: [{ type: Schema.Types.ObjectId, ref: 'Assignment' }],
+}, { timestamps: true });
 
-  async save() {
-    const db = getDb();
-    const result = await db.collection('courses').insertOne(this);
-    return result.ops[0];
-  }
+const Course = mongoose.model('Course', courseSchema);
 
-  static async findById(id) {
-    const db = getDb();
-    return await db.collection('courses').findOne({ _id: new require('mongodb').ObjectId(id) });
-  }
-
-  static async findByInstructorId(instructorId) {
-    const db = getDb();
-    return await db.collection('courses').find({ instructorId }).toArray();
-  }
-}
-
-module.exports = Course;
+module.exports = { Course, CourseClientFields: ['subject', 'number', 'title', 'term', 'instructorID'] };
