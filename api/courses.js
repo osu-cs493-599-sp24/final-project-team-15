@@ -8,9 +8,6 @@ const fs = require("fs");
 
 const router = Router();
 
-router.get("/test", (req, res, next) => {
-  res.status(200).send({ test: "test successful, courses" });
-});
 
 // GET ALL COURSES
 router.get("/", async (req, res, next) => {
@@ -20,7 +17,7 @@ router.get("/", async (req, res, next) => {
   const offset = (page - 1) * numPerPage;
 
   try {
-    const courses = await Course.find()
+    const courses = await Course.find().select('-_id -students -assignments -createdAt -updatedAt -__v')
       .skip(offset)
       .limit(numPerPage);
     const totalCount = await Course.countDocuments();
@@ -75,7 +72,7 @@ router.post("/", authMiddleware, async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
   const courseId = req.params.id;
   try {
-    const course = await Course.findById(courseId).populate('students').populate('assignments');
+    const course = await Course.findById(courseId).select('-students -assignments -createdAt -updatedAt -__v')
     if (course) {
       res.status(200).send(course);
     } else {
@@ -170,7 +167,7 @@ router.post("/:id/students", authMiddleware, async (req, res, next) => {
   const courseId = req.params.id;
   const admin = req.user.role === 'admin';
 
-  if (admin) {
+  if (admin || req.user.role === 'instructor') {
     try {
       const course = await Course.findById(courseId);
       if (!course) {
@@ -205,12 +202,12 @@ router.get("/:id/roster", authMiddleware, async (req, res, next) => {
   if (isInstructor || admin) {
     try {
       const courseId = req.params.id;
-      const course = await Course.findById(courseId).populate('students', 'name email role');
+      const course = await Course.findById(courseId).populate('students', '_id name email role');
       if (!course) {
         return res.status(404).send({ error: "Course not found" });
       }
 
-      const fields = ["name", "email", "role"];
+      const fields = ["_id", "name", "email", "role"];
       const json2csvParser = new Parser({ fields });
       const csv = json2csvParser.parse(course.students);
 
@@ -239,7 +236,7 @@ router.get("/:id/roster", authMiddleware, async (req, res, next) => {
 router.get("/:id/assignments", authMiddleware, async (req, res, next) => {
   const courseId = req.params.id;
   try {
-    const assignments = await Assignment.find({ courseId: courseId });
+    const assignments = await Assignment.find({ courseId: courseId }).select('-createdAt -updatedAt -__v');
     res.status(200).send(assignments);
   } catch (e) {
     next(e);
