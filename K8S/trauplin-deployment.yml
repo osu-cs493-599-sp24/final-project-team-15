@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+      - name: api
+        image: upanshu21/yelp-app-15:latest
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_HOST
+          value: mongo
+        - name: MONGO_USER
+          value: trauplin
+        - name: MONGO_PASSWORD
+          value: hunter2
+        - name: MONGO_DB_NAME
+          value: trauplin
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api
+spec:
+  ports:
+  - port: 8000
+    targetPort: 8000
+  selector:
+    app: api
