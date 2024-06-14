@@ -57,34 +57,43 @@ router.post('/admin', async (req, res) => {
 });
 
 const conditionalAuthMiddleware = async (req, res, next) => {
-    const { role } = req.body;
+    const role = req.body.role;
 
-    // If role is 'student', skip authentication
     if (role === 'student') {
         return next();
     }
 
-    // Apply authentication for 'admin' or 'instructor' roles
-    authMiddleware(req, res, async (err) => {
-        if (err) {
-            return res.status(403).json({ message: 'Unauthorized access' });
-        }
-        // Proceed to the next middleware or route handler
-        next();
-    });
+    if (role === 'admin' || role === 'instructor') {
+        authMiddleware(req, res, async (err) => {
+            if (err) {
+                console.error('AuthMiddleware error:', err);
+                return res.status(403).json({ message: 'Unauthorized access' });
+            }
+
+            const user = req.user;
+
+            console.log('Authenticated User:', user);
+
+            if (!user || user.role !== 'admin') {
+                return res.status(403).json({ message: 'Unauthorized access' });
+            }
+
+            next();
+        });
+    } else {
+        return res.status(400).json({ message: 'Invalid role' });
+    }
 };
 
 router.post('/', conditionalAuthMiddleware, async (req, res) => {
     const { name, email, password, role } = req.body;
 
-    // Check if all required fields are provided
     if (!name || !email || !password || !role) {
         return res.status(400).json({ message: 'Invalid input' });
     }
 
     try {
         if (['admin', 'instructor'].includes(role)) {
-            // Check the role of the authenticated user
             const authenticatedUser = await User.findById(req.user._id);
 
             if (!authenticatedUser || authenticatedUser.role !== 'admin') {
@@ -92,10 +101,8 @@ router.post('/', conditionalAuthMiddleware, async (req, res) => {
             }
         }
 
-        // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 12);
 
-        // Create and save the new user
         const newUser = new User({ name, email, password: hashedPassword, role });
         const savedUser = await newUser.save();
 
