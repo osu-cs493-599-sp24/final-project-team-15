@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 
 const api = require('./api');
 const { connectToDb } = require('./mongodb');
@@ -9,6 +10,14 @@ const { connectToDb } = require('./mongodb');
 const app = express();
 const port = process.env.PORT || 8000;
 console.log(process.env.MONGO_USER, process.env.MONGO_PASSWORD);
+
+const limiter = rateLimit({
+    windowMs: 30 * 1000, 
+    max: 5, 
+    message: 'Too many requests from this IP, please try again later.',
+});
+
+app.use(limiter);
 
 app.use(morgan('dev'));
 
